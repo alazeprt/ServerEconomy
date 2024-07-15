@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.alazeprt.serverstore"
-version = "1.2"
+version = "1.0"
 
 repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
