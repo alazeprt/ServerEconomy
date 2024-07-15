@@ -1,8 +1,9 @@
-package com.alazeprt.serverstore.utils;
+package com.alazeprt.servereconomy.store.utils;
 
 import java.math.BigDecimal;
 
-import static com.alazeprt.serverstore.ServerEconomyPlugin.*;
+import static com.alazeprt.servereconomy.ServerEconomyPlugin.*;
+import static com.alazeprt.servereconomy.store.ServerStore.store_data;
 
 public class DataUtils {
     public static void addSellAmount(String project, String player, BigDecimal bigDecimal) {

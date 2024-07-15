@@ -1,4 +1,4 @@
-package com.alazeprt.serverstore.utils;
+package com.alazeprt.servereconomy.utils;
 
 public class TimeUtils {
     public static String formatTime(long hours) {

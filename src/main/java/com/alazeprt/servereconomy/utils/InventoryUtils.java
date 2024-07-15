@@ -1,4 +1,4 @@
-package com.alazeprt.serverstore.utils;
+package com.alazeprt.servereconomy.utils;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

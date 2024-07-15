@@ -1,10 +1,10 @@
-package com.alazeprt.serverstore.commands.sub;
+package com.alazeprt.servereconomy.store.commands.sub;
 
-import com.alazeprt.serverstore.commands.SubCommand;
-import com.alazeprt.serverstore.utils.TimeUtils;
+import com.alazeprt.servereconomy.store.commands.SubCommand;
+import com.alazeprt.servereconomy.utils.TimeUtils;
 import org.bukkit.command.CommandSender;
 
-import static com.alazeprt.serverstore.ServerEconomyPlugin.store_data;
+import static com.alazeprt.servereconomy.store.ServerStore.store_data;
 
 public class SearchCommand implements SubCommand {
     @Override

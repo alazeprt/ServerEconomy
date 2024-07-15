@@ -1,9 +1,10 @@
-package com.alazeprt.serverstore;
+package com.alazeprt.servereconomy;
 
-import com.alazeprt.serverstore.commands.MainCommand;
-import com.alazeprt.serverstore.events.ServerStoreEvent;
-import com.alazeprt.serverstore.events.StoreEvent;
-import com.alazeprt.serverstore.utils.DataUtils;
+import com.alazeprt.servereconomy.store.ServerStore;
+import com.alazeprt.servereconomy.store.commands.MainCommand;
+import com.alazeprt.servereconomy.store.events.ServerStoreEvent;
+import com.alazeprt.servereconomy.store.events.StoreEvent;
+import com.alazeprt.servereconomy.store.utils.DataUtils;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,11 +24,7 @@ public class ServerEconomyPlugin extends JavaPlugin {
 
     public static BigDecimal money;
 
-    public static FileConfiguration store_data;
-
     public static FileConfiguration config;
-
-    public static ConfigurationSection store_config;
 
     public static FileConfiguration data;
 
@@ -59,9 +56,9 @@ public class ServerEconomyPlugin extends JavaPlugin {
             saveResource("store.yml", false);
         }
         config = YamlConfiguration.loadConfiguration(configFile);
-        store_data = YamlConfiguration.loadConfiguration(storeFile);
         data = YamlConfiguration.loadConfiguration(dataFile);
-        store_config = config.getConfigurationSection("store");
+        ServerStore store = new ServerStore(this);
+        store.enable(this);
         if(data.getString("money") == null) {
             data.set("money", new BigDecimal(config.getString("initial")).intValue());
             try {
@@ -71,23 +68,10 @@ public class ServerEconomyPlugin extends JavaPlugin {
             }
         }
         money = new BigDecimal(data.getString("money"));
+        getLogger().info("Starting thread for data reset");
+        store.enableReset(this);
         getLogger().info("Setting up command");
         Objects.requireNonNull(getCommand("store")).setExecutor(new MainCommand());
-        getLogger().info("Starting thread for data reset");
-        Thread thread = new Thread(() -> {
-            Bukkit.getScheduler().runTaskTimer(this, () -> {
-                data.set("time", data.getInt("time") + 1);
-                if(store_data.getBoolean("sell.reset_limit") && (data.getInt("time") / 60.0) % store_data.getInt("sell.reset_time") == 0) {
-                    DataUtils.resetSellData();
-                    Bukkit.getScheduler().runTask(this, () -> getServer().broadcastMessage("§a[ServerStore] 重置物品收购数量!"));
-                }
-                if(store_data.getBoolean("buy.reset_limit") && (data.getInt("time") / 60.0) % store_data.getInt("buy.reset_time") == 0) {
-                    DataUtils.resetBuyData();
-                    Bukkit.getScheduler().runTask(this, () -> getServer().broadcastMessage("§a[ServerStore] 重置物品购买数量!"));
-                }
-            }, 0, 1200);
-        });
-        thread.start();
         getLogger().info("Enabling events");
         addEvent(new ServerStoreEvent());
         eventList.forEach(StoreEvent::onEnable);

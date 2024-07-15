@@ -1,6 +1,6 @@
-package com.alazeprt.serverstore.commands.sub;
+package com.alazeprt.servereconomy.store.commands.sub;
 
-import com.alazeprt.serverstore.commands.SubCommand;
+import com.alazeprt.servereconomy.store.commands.SubCommand;
 import org.bukkit.command.CommandSender;
 
 public class ErrorCommand implements SubCommand {
