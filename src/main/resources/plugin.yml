@@ -1,0 +1,44 @@
+name: ServerStore
+main: com.alazeprt.serverstore.ServerEconomyPlugin
+version: 1.2
+author: alazeprt
+api-version: 1.13
+description: A better system store by command
+website: https://github.com/alazeprt/ServerStore
+depend:
+  - Vault
+commands:
+  store:
+    description: Main Command
+    aliases:
+      - ss
+      - serverstore
+      - server-store
+      - server_store
+      - shop
+      - servershop
+      - server-shop
+      - server_shop
+permissions:
+  serverstore.buy:
+    description: Buy item
+  serverstore.help:
+    description: Help command
+  serverstore.list:
+    description: List items
+  serverstore.search:
+    description: Search item
+  serverstore.sell:
+    description: Sell item
+  serverstore.status:
+    description: Status command
+  serverstore.player:
+    description: Basic permissions that players have
+    default: true
+    children:
+      - serverstore.buy
+      - serverstore.help
+      - serverstore.list
+      - serverstore.search
+      - serverstore.sell
+      - serverstore.status

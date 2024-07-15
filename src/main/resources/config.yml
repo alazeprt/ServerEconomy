@@ -1,0 +1,50 @@
+# The money that were in the store at the beginning
+initial: 10000
+
+store:
+  stop:
+    # Whether to enable the stop Shop feature
+    enable: true
+
+    # The amount of money needed to stop selling
+    money: 100
+
+    # Types of stop stores
+    # Type:
+    # - STOP_SELL (stops player sells only)
+    # - STOP_BUY (stops player buys only)
+    # - STOP_ALL (stops both player sells and buys)
+    type: "STOP_SELL"
+
+
+    broadcast:
+      # Whether to broadcast the stop message
+      enable: true
+
+      # The message to broadcast
+      message: "&c[ServerStore] 停止收购物品!"
+
+  restore:
+    # Whether to enable the restore Shop feature
+    enable: true
+
+    # The amount of money needed to restore selling
+    money: 1000
+
+    broadcast:
+      # Whether to broadcast the restore message
+      enable: true
+
+      # The message to broadcast
+      message: "&c[ServerStore] 重启收购物品!"
+
+  # Configuration of the /store status directive
+  status:
+    # Whether to show money left in the store
+    money: true
+
+    # Whether to show the money needed for store stopping
+    stop: true
+
+    # Whether to show the money needed for store recovery
+    restore: true

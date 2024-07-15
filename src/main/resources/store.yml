@@ -1,0 +1,71 @@
+# Sample Store Configuration
+
+# Items sold by players
+sell:
+  # Whether to limit the number of sells per item by a single player
+  player_limit: true
+
+  # Whether to limit the number of sells per item by total
+  total_limit: false
+
+  # Whether to limit the number of resets per item
+  reset_limit: true
+
+  # How often to reset sells limits (hours)
+  reset_time: 24
+
+  # Sample item #1
+  test1:
+    # Sold item
+    item: iron_ingot
+
+    # Number of items sold
+    amount: 1
+
+    # Price of the item
+    price: 10
+
+    # Number of sells available to a single player
+    player_limit: 128
+
+  # Sample item #2
+  test2:
+    item: diamond
+    amount: 1
+    price: 40
+    player_limit: 64
+
+# Items bought by players
+buy:
+  # Whether to limit the number of buys per item by a single player
+  player_limit: true
+
+  # Whether to limit the number of buys per item by total
+  total_limit: false
+
+  # Whether to limit the number of resets per item
+  reset_limit: true
+
+  # How often to reset sells limits (hours)
+  reset_time: 24
+
+  # Sample item #1
+  test1:
+    # Bought item
+    item: iron_ingot
+
+    # Number of items bought
+    amount: 1
+
+    # Price of the item
+    price: 10
+
+    # Number of buys available to a single player
+    player_limit: 128
+
+  # Sample item #2
+  test2:
+    item: diamond
+    amount: 1
+    price: 40
+    player_limit: 64
