@@ -1,4 +1,4 @@
-package com.alazeprt.servereconomy.store.events;
+package com.alazeprt.servereconomy.feature.store.events;
 
 public interface StoreEvent {
     void onEnable();

@@ -1,11 +1,11 @@
-package com.alazeprt.servereconomy.store.commands.sub;
+package com.alazeprt.servereconomy.feature.store.commands.sub;
 
-import com.alazeprt.servereconomy.store.commands.SubCommand;
-import com.alazeprt.servereconomy.store.utils.StatusUtils;
+import com.alazeprt.servereconomy.feature.store.commands.SubCommand;
+import com.alazeprt.servereconomy.feature.store.utils.StatusUtils;
 import org.bukkit.command.CommandSender;
 
 import static com.alazeprt.servereconomy.ServerEconomyPlugin.money;
-import static com.alazeprt.servereconomy.store.ServerStore.store_config;
+import static com.alazeprt.servereconomy.feature.store.ServerStore.store_config;
 
 public class StatusCommand implements SubCommand {
     @Override

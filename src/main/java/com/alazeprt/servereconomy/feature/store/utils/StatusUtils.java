@@ -1,7 +1,7 @@
-package com.alazeprt.servereconomy.store.utils;
+package com.alazeprt.servereconomy.feature.store.utils;
 
 
-import static com.alazeprt.servereconomy.store.ServerStore.store_config;
+import static com.alazeprt.servereconomy.feature.store.ServerStore.store_config;
 
 public class StatusUtils {
 

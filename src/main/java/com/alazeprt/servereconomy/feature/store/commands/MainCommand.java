@@ -1,6 +1,6 @@
-package com.alazeprt.servereconomy.store.commands;
+package com.alazeprt.servereconomy.feature.store.commands;
 
-import com.alazeprt.servereconomy.store.commands.sub.*;
+import com.alazeprt.servereconomy.feature.store.commands.sub.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

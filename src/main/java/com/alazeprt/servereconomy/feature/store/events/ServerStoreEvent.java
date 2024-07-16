@@ -1,10 +1,10 @@
-package com.alazeprt.servereconomy.store.events;
+package com.alazeprt.servereconomy.feature.store.events;
 
 import java.math.BigDecimal;
 
 import static com.alazeprt.servereconomy.ServerEconomyPlugin.money;
-import static com.alazeprt.servereconomy.store.ServerStore.store_config;
-import static com.alazeprt.servereconomy.store.utils.StatusUtils.status;
+import static com.alazeprt.servereconomy.feature.store.ServerStore.store_config;
+import static com.alazeprt.servereconomy.feature.store.utils.StatusUtils.status;
 import static org.bukkit.Bukkit.getServer;
 
 public class ServerStoreEvent implements StoreEvent {

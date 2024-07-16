@@ -1,10 +1,12 @@
 package com.alazeprt.servereconomy;
 
-import com.alazeprt.servereconomy.store.ServerStore;
-import com.alazeprt.servereconomy.store.commands.MainCommand;
-import com.alazeprt.servereconomy.store.events.ServerStoreEvent;
-import com.alazeprt.servereconomy.store.events.StoreEvent;
-import com.alazeprt.servereconomy.store.utils.DataUtils;
+import com.alazeprt.servereconomy.feature.store.ServerStore;
+import com.alazeprt.servereconomy.feature.store.commands.MainCommand;
+import com.alazeprt.servereconomy.feature.store.events.ServerStoreEvent;
+import com.alazeprt.servereconomy.feature.store.events.StoreEvent;
+import com.alazeprt.servereconomy.feature.store.utils.DataUtils;
+import com.alazeprt.servereconomy.feature.territory.ServerTerritory;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,7 +30,13 @@ public class ServerEconomyPlugin extends JavaPlugin {
 
     public static FileConfiguration data;
 
+    public static GriefPrevention griefPrevention;
+
     public static Economy economy;
+
+    private ServerStore store;
+
+    private ServerTerritory territory;
 
     public static final List<StoreEvent> eventList = new ArrayList<>();
 
@@ -57,8 +65,8 @@ public class ServerEconomyPlugin extends JavaPlugin {
         }
         config = YamlConfiguration.loadConfiguration(configFile);
         data = YamlConfiguration.loadConfiguration(dataFile);
-        ServerStore store = new ServerStore(this);
-        store.enable(this);
+        store = new ServerStore(this);
+        store.enable();
         if(data.getString("money") == null) {
             data.set("money", new BigDecimal(config.getString("initial")).intValue());
             try {
@@ -69,7 +77,13 @@ public class ServerEconomyPlugin extends JavaPlugin {
         }
         money = new BigDecimal(data.getString("money"));
         getLogger().info("Starting thread for data reset");
-        store.enableReset(this);
+        store.enableReset();
+        if(config.getBoolean("territory.enable")) {
+            getLogger().info("Setting up territory system...");
+            griefPrevention = GriefPrevention.instance;
+            territory = new ServerTerritory(this);
+            territory.enable();
+        }
         getLogger().info("Setting up command");
         Objects.requireNonNull(getCommand("store")).setExecutor(new MainCommand());
         getLogger().info("Enabling events");
@@ -88,6 +102,9 @@ public class ServerEconomyPlugin extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        getLogger().info("Disabling features");
+        store.disable();
+        if(territory != null) territory.disable();
         getLogger().info("Disabling events");
         eventList.forEach(StoreEvent::onDisable);
         getLogger().info("ServerStore is disabled! (" + (System.currentTimeMillis() - start) + " ms)");

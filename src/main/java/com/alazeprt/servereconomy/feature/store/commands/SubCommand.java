@@ -1,4 +1,4 @@
-package com.alazeprt.servereconomy.store.commands;
+package com.alazeprt.servereconomy.feature.store.commands;
 
 import org.bukkit.command.CommandSender;
 

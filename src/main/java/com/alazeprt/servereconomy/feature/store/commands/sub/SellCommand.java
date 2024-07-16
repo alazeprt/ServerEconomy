@@ -1,11 +1,11 @@
-package com.alazeprt.servereconomy.store.commands.sub;
+package com.alazeprt.servereconomy.feature.store.commands.sub;
 
 import com.alazeprt.servereconomy.ServerEconomyPlugin;
-import com.alazeprt.servereconomy.store.commands.SubCommand;
-import com.alazeprt.servereconomy.store.events.StoreEvent;
-import com.alazeprt.servereconomy.store.utils.DataUtils;
+import com.alazeprt.servereconomy.feature.store.commands.SubCommand;
+import com.alazeprt.servereconomy.feature.store.events.StoreEvent;
+import com.alazeprt.servereconomy.feature.store.utils.DataUtils;
 import com.alazeprt.servereconomy.utils.InventoryUtils;
-import com.alazeprt.servereconomy.store.utils.StatusUtils;
+import com.alazeprt.servereconomy.feature.store.utils.StatusUtils;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 
 import static com.alazeprt.servereconomy.ServerEconomyPlugin.*;
-import static com.alazeprt.servereconomy.store.ServerStore.store_data;
+import static com.alazeprt.servereconomy.feature.store.ServerStore.store_data;
 
 public class SellCommand implements SubCommand {
     @Override

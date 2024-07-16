@@ -1,7 +1,8 @@
-package com.alazeprt.servereconomy.store;
+package com.alazeprt.servereconomy.feature.store;
 
 import com.alazeprt.servereconomy.ServerEconomyPlugin;
-import com.alazeprt.servereconomy.store.utils.DataUtils;
+import com.alazeprt.servereconomy.feature.ServerFeature;
+import com.alazeprt.servereconomy.feature.store.utils.DataUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,7 +14,7 @@ import static com.alazeprt.servereconomy.ServerEconomyPlugin.config;
 import static com.alazeprt.servereconomy.ServerEconomyPlugin.data;
 import static org.bukkit.Bukkit.getServer;
 
-public class ServerStore {
+public class ServerStore implements ServerFeature {
 
     public static ConfigurationSection store_config;
 
@@ -25,12 +26,16 @@ public class ServerStore {
         this.plugin = plugin;
     }
 
-    public void enable(ServerEconomyPlugin plugin) {
+    @Override
+    public void enable() {
         store_config = config.getConfigurationSection("store");
         store_data = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "store.yml"));
     }
 
-    public void enableReset(ServerEconomyPlugin plugin) {
+    @Override
+    public void disable() {}
+
+    public void enableReset() {
         Thread thread = new Thread(() -> {
             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 data.set("time", data.getInt("time") + 1);

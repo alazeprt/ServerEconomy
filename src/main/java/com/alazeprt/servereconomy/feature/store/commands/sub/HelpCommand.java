@@ -1,6 +1,6 @@
-package com.alazeprt.servereconomy.store.commands.sub;
+package com.alazeprt.servereconomy.feature.store.commands.sub;
 
-import com.alazeprt.servereconomy.store.commands.SubCommand;
+import com.alazeprt.servereconomy.feature.store.commands.SubCommand;
 import org.bukkit.command.CommandSender;
 
 public class HelpCommand implements SubCommand {
