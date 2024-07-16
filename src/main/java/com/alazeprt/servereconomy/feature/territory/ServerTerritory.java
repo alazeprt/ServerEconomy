@@ -10,7 +10,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +57,7 @@ public class ServerTerritory implements ServerFeature {
             sampleList.add(sample);
             sample.start();
         }
+        if(data.getConfigurationSection("territory") == null) return;
         for(String sampleName : data.getConfigurationSection("territory").getValues(false).keySet()) {
             sampleList.forEach(sample -> {
                 if(sample.getName().equals(sampleName)) {
