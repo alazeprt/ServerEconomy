@@ -10,7 +10,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.alazeprt.servereconomy.ServerEconomyPlugin.data;
 
 public class ServerTerritory implements ServerFeature {
 
@@ -50,14 +54,28 @@ public class ServerTerritory implements ServerFeature {
             int interval = section.getInt("interval");
             String timekeeping = section.getString("timekeeping");
             TerritoryTime time = new TerritoryTime(BigDecimal.valueOf(interval), timekeeping);
-            TerritorySample sample = new TerritorySample(plugin, condition, tax, time);
+            TerritorySample sample = new TerritorySample(plugin, sectionName, condition, tax, time);
             sampleList.add(sample);
             sample.start();
+        }
+        for(String sampleName : data.getConfigurationSection("territory").getValues(false).keySet()) {
+            sampleList.forEach(sample -> {
+                if(sample.getName().equals(sampleName)) {
+                    data.getConfigurationSection("territory." + sampleName).getValues(false).forEach((k, v) -> {
+                        sample.addBlackListPlayer(k, BigDecimal.valueOf(data.getDouble("territory." + sampleName + "." + k)));
+                    });
+                }
+            });
         }
     }
 
     @Override
     public void disable() {
-
+        for(TerritorySample sample : sampleList) {
+            for(Map.Entry<String, BigDecimal> entry : sample.getBlackList().entrySet()) {
+                data.set("territory." + sample.getName() + "." + entry.getKey(),
+                        entry.getValue().doubleValue());
+            }
+        }
     }
 }

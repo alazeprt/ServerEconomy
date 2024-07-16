@@ -4,12 +4,9 @@ import com.alazeprt.servereconomy.feature.store.ServerStore;
 import com.alazeprt.servereconomy.feature.store.commands.MainCommand;
 import com.alazeprt.servereconomy.feature.store.events.ServerStoreEvent;
 import com.alazeprt.servereconomy.feature.store.events.StoreEvent;
-import com.alazeprt.servereconomy.feature.store.utils.DataUtils;
 import com.alazeprt.servereconomy.feature.territory.ServerTerritory;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -95,16 +92,16 @@ public class ServerEconomyPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         long start = System.currentTimeMillis();
-        getLogger().info("Disabling ServerStore");
+        getLogger().info("Disabling ServerEconomy");
+        getLogger().info("Disabling features");
+        if(territory != null) territory.disable();
+        store.disable();
         try {
             data.set("money", money.doubleValue());
             data.save(new File(getDataFolder(), "data.yml"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        getLogger().info("Disabling features");
-        store.disable();
-        if(territory != null) territory.disable();
         getLogger().info("Disabling events");
         eventList.forEach(StoreEvent::onDisable);
         getLogger().info("ServerStore is disabled! (" + (System.currentTimeMillis() - start) + " ms)");
