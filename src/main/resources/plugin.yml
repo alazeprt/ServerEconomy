@@ -7,6 +7,8 @@ description: A better system store by command
 website: https://github.com/alazeprt/ServerStore
 depend:
   - Vault
+softdepend:
+  - GriefPrevention
 commands:
   store:
     description: Main Command
