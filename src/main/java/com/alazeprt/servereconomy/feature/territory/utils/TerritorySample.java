@@ -55,8 +55,11 @@ public class TerritorySample {
                                 economy.withdrawPlayer(player.getName(), money.doubleValue());
                                 player.sendMessage(ChatColor.GREEN + "已扣除领地税 " +
                                         ChatColor.GOLD + money + ChatColor.GREEN + " 金币!");
+                                economy.withdrawPlayer(player.getName(), blackList.get(player.getName()).doubleValue());
+                                player.sendMessage(ChatColor.GREEN + "已扣除剩余领地税 " +
+                                        ChatColor.GOLD + blackList.get(player.getName()) + ChatColor.GREEN + " 金币!");
                                 blackList.remove(player.getName());
-                                ServerEconomyPlugin.money = ServerEconomyPlugin.money.add(money);
+                                ServerEconomyPlugin.money = ServerEconomyPlugin.money.add(money).add(blackList.get(player.getName()));
                             } else {
                                 economy.withdrawPlayer(player.getName(), money.doubleValue());
                                 player.sendMessage(ChatColor.GREEN + "已扣除本次领地税 " +
