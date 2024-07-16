@@ -38,18 +38,19 @@ public class TerritorySample {
                     BigDecimal money = tax.calculate(player);
                     if(BigDecimal.valueOf(economy.getBalance(player)).compareTo(money) > 0) {
                         if(!blackList.containsKey(player)) {
-                            economy.bankWithdraw(player.getName(), money.doubleValue());
+                            economy.withdrawPlayer(player.getName(), money.doubleValue());
                             player.sendMessage(ChatColor.GREEN + "已扣除领地税 " +
                                     ChatColor.GOLD + money + ChatColor.GREEN + " 金币!");
                             ServerEconomyPlugin.money = ServerEconomyPlugin.money.add(money);
                         } else {
                             if(BigDecimal.valueOf(economy.getBalance(player)).subtract(blackList.get(player)).compareTo(money) > 0) {
-                                economy.bankWithdraw(player.getName(), money.doubleValue());
+                                economy.withdrawPlayer(player.getName(), money.doubleValue());
                                 player.sendMessage(ChatColor.GREEN + "已扣除领地税 " +
                                         ChatColor.GOLD + money + ChatColor.GREEN + " 金币!");
+                                blackList.remove(player);
                                 ServerEconomyPlugin.money = ServerEconomyPlugin.money.add(money);
                             } else {
-                                economy.bankWithdraw(player.getName(), money.doubleValue());
+                                economy.withdrawPlayer(player.getName(), money.doubleValue());
                                 player.sendMessage(ChatColor.GREEN + "已扣除本次领地税 " +
                                         ChatColor.GOLD + money + ChatColor.GREEN + " 金币!"
                                         + ChatColor.RED + "\n你还需要缴纳剩余领地税" +
