@@ -35,6 +35,7 @@ public class TerritorySample {
             time.start(plugin, () -> {
                 for(Player player : Bukkit.getOnlinePlayers()) {
                     if(!condition.check(player)) continue;
+                    if(time.getTime().get(player.getName()).remainder(time.getInterval()).compareTo(BigDecimal.ZERO) != 0) continue;
                     BigDecimal money = tax.calculate(player);
                     if(BigDecimal.valueOf(economy.getBalance(player)).compareTo(money) > 0) {
                         if(!blackList.containsKey(player)) {

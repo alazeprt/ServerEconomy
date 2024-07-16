@@ -46,4 +46,8 @@ public class TerritoryTime {
     public Map<String, BigDecimal> getTime() {
         return time;
     }
+
+    public BigDecimal getInterval() {
+        return interval;
+    }
 }
