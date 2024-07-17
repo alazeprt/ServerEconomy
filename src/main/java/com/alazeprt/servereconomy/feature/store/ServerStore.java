@@ -2,7 +2,7 @@ package com.alazeprt.servereconomy.feature.store;
 
 import com.alazeprt.servereconomy.ServerEconomyPlugin;
 import com.alazeprt.servereconomy.feature.ServerFeature;
-import com.alazeprt.servereconomy.feature.store.database.MySQLDatabase;
+import com.alazeprt.servereconomy.database.MySQLDatabase;
 import com.alazeprt.servereconomy.feature.store.utils.DataUtils;
 import com.alazeprt.servereconomy.feature.store.utils.FileUtils;
 import com.alazeprt.servereconomy.feature.store.utils.MySQLUtils;
@@ -13,8 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 
-import static com.alazeprt.servereconomy.ServerEconomyPlugin.config;
-import static com.alazeprt.servereconomy.ServerEconomyPlugin.data;
+import static com.alazeprt.servereconomy.ServerEconomyPlugin.*;
 import static org.bukkit.Bukkit.getServer;
 
 public class ServerStore implements ServerFeature {
@@ -35,20 +34,8 @@ public class ServerStore implements ServerFeature {
     public void enable() {
         store_config = config.getConfigurationSection("store");
         store_data = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "store.yml"));
-        if(config.getBoolean("database.enable")) {
-            if(config.getString("database.type").equalsIgnoreCase("MySQL")) {
-                String host = config.getString("database.mysql.host");
-                int port = config.getInt("database.mysql.port");
-                String database = config.getString("database.mysql.database");
-                String username = config.getString("database.mysql.username");
-                String password = config.getString("database.mysql.password");
-                String driver = config.getString("database.mysql.driver");
-                MySQLDatabase mySQLDatabase = new MySQLDatabase(host, port, database, username, password);
-                mySQLDatabase.initial(driver);
-                dataUtils = new MySQLUtils(mySQLDatabase);
-            } else {
-                dataUtils = new FileUtils();
-            }
+        if(mySQLDatabase != null) {
+            dataUtils = new MySQLUtils(mySQLDatabase);
         } else {
             dataUtils = new FileUtils();
         }

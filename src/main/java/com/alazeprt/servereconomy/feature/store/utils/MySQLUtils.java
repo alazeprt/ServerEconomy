@@ -1,6 +1,6 @@
 package com.alazeprt.servereconomy.feature.store.utils;
 
-import com.alazeprt.servereconomy.feature.store.database.MySQLDatabase;
+import com.alazeprt.servereconomy.database.MySQLDatabase;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;

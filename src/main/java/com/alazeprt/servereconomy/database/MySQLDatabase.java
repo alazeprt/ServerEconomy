@@ -1,4 +1,4 @@
-package com.alazeprt.servereconomy.feature.store.database;
+package com.alazeprt.servereconomy.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -8,7 +8,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MySQLDatabase {
 
@@ -24,12 +26,20 @@ public class MySQLDatabase {
             "name VARCHAR(512) NOT NULL," +
             "money DECIMAL(12,2) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
+    private final String createTerritoryTable = "CREATE TABLE IF NOT EXISTS servereconomy_territory_{sample}(" +
+            "name VARCHAR(512) NOT NULL," +
+            "money DECIMAL(20,4) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
     private final String searchPlayerData = "SELECT * FROM servereconomy_store_{project}" +
             " WHERE name = '{player}';";
 
     private final String changePlayerData = "UPDATE servereconomy_store_{project} SET money = {money} WHERE name = '{player}';";
 
+    private final String changeTerritoryData = "UPDATE servereconomy_territory_{sample} SET money = {money} WHERE name = '{player}';";
+
     private final String searchTotal = "SELECT money FROM servereconomy_store_{project}";
+
+    private final String getTerritoryData = "SELECT * FROM servereconomy_territory_{sample}";
 
     private final String deleteTable = "DROP TABLE {table};";
 
@@ -98,6 +108,45 @@ public class MySQLDatabase {
         }
     }
 
+    public void createTerritoryTable(String sampleName) {
+        checkConnection();
+        if(!isValidTableName(sampleName)) throw new IllegalArgumentException("Invalid table name: " + sampleName);
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(createTerritoryTable.replace("{territory}", sampleName));
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, Map<String, BigDecimal>> getAllTerritoryData() {
+        checkConnection();
+        Map<String, Map<String, BigDecimal>> allTerritoryData = new HashMap<>();
+        for(String sample : getTerritoryTables()) {
+            allTerritoryData.put(sample, getTerritoryData(sample));
+        }
+        return allTerritoryData;
+    }
+
+    public Map<String, BigDecimal> getTerritoryData(String sample) {
+        checkConnection();
+        Map<String, BigDecimal> map = new HashMap<>();
+        if(!isValidTableName(sample)) throw new IllegalArgumentException("Invalid table name: " + sample);
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(getTerritoryData.replace("{sample}", sample));
+            while(resultSet.next()) {
+                String name = resultSet.getString("name");
+                BigDecimal money = resultSet.getBigDecimal("money");
+                map.put(name, money);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return map;
+    }
+
     public int getStorePlayerData(String type, String project, String playerName) throws SQLException {
         checkConnection();
         project = type + "_" + project;
@@ -142,12 +191,30 @@ public class MySQLDatabase {
             throw new IllegalArgumentException("Invalid table name: " + project);
         }
         List<String> table = getTables(type);
-        if(!table.contains(project)) {
+        if(!table.contains("servereconomy_store_" + project)) {
             createTable(type, project);
         }
         try {
             Statement statement = connection.createStatement();
             statement.execute(changePlayerData.replace("{project}", project).replace("{player}", playerName).replace("{money}", String.valueOf(money)));
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void changeTerritoryData(String sample, String playerName, double money) {
+        checkConnection();
+        if(!isValidTableName(sample)) {
+            throw new IllegalArgumentException("Invalid table name: " +sample);
+        }
+        List<String> table = getTerritoryTables();
+        if(!table.contains("servereconomy_territory_" + sample)) {
+            createTerritoryTable(sample);
+        }
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(changeTerritoryData.replace("{sample}", sample).replace("{player}", playerName).replace("{money}", String.valueOf(money)));
             statement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -163,6 +230,25 @@ public class MySQLDatabase {
             while(resultSet.next()) {
                 String tableName = (String) resultSet.getObject("TABLE_NAME");
                 if(tableName.startsWith("servereconomy_store_" + type)) {
+                    table.add(tableName);
+                }
+            }
+            resultSet.close();
+            return table;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> getTerritoryTables() {
+        checkConnection();
+        try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet resultSet = metaData.getTables(connection.getCatalog(), null, null, new String[] { "TABLE" });
+            List<String> table = new ArrayList<>();
+            while(resultSet.next()) {
+                String tableName = (String) resultSet.getObject("TABLE_NAME");
+                if(tableName.startsWith("servereconomy_territory_")) {
                     table.add(tableName);
                 }
             }

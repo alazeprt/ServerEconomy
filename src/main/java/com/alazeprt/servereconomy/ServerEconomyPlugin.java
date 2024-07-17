@@ -1,5 +1,6 @@
 package com.alazeprt.servereconomy;
 
+import com.alazeprt.servereconomy.database.MySQLDatabase;
 import com.alazeprt.servereconomy.feature.store.ServerStore;
 import com.alazeprt.servereconomy.feature.store.commands.MainCommand;
 import com.alazeprt.servereconomy.feature.store.events.ServerStoreEvent;
@@ -34,6 +35,8 @@ public class ServerEconomyPlugin extends JavaPlugin {
     private ServerStore store;
 
     private ServerTerritory territory;
+
+    public static MySQLDatabase mySQLDatabase;
 
     public static final List<StoreEvent> eventList = new ArrayList<>();
 
@@ -80,6 +83,19 @@ public class ServerEconomyPlugin extends JavaPlugin {
             griefPrevention = GriefPrevention.instance;
             territory = new ServerTerritory(this);
             territory.enable();
+        }
+        if(config.getBoolean("database.enable")) {
+            getLogger().info("Setting up database...");
+            if(config.getString("database.type").equalsIgnoreCase("MySQL")) {
+                String host = config.getString("database.mysql.host");
+                int port = config.getInt("database.mysql.port");
+                String database = config.getString("database.mysql.database");
+                String username = config.getString("database.mysql.username");
+                String password = config.getString("database.mysql.password");
+                String driver = config.getString("database.mysql.driver");
+                mySQLDatabase = new MySQLDatabase(host, port, database, username, password);
+                mySQLDatabase.initial(driver);
+            }
         }
         getLogger().info("Setting up command");
         Objects.requireNonNull(getCommand("store")).setExecutor(new MainCommand());

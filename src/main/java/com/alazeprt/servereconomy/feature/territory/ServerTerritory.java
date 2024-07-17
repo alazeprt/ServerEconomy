@@ -1,6 +1,7 @@
 package com.alazeprt.servereconomy.feature.territory;
 
 import com.alazeprt.servereconomy.ServerEconomyPlugin;
+import com.alazeprt.servereconomy.database.MySQLDatabase;
 import com.alazeprt.servereconomy.feature.ServerFeature;
 import com.alazeprt.servereconomy.feature.territory.utils.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.alazeprt.servereconomy.ServerEconomyPlugin.data;
+import static com.alazeprt.servereconomy.ServerEconomyPlugin.mySQLDatabase;
 
 public class ServerTerritory implements ServerFeature {
 
@@ -57,24 +59,43 @@ public class ServerTerritory implements ServerFeature {
             sampleList.add(sample);
             sample.start();
         }
-        if(data.getConfigurationSection("territory") == null) return;
-        for(String sampleName : data.getConfigurationSection("territory").getValues(false).keySet()) {
+        if(mySQLDatabase != null) {
+            if(mySQLDatabase.getTerritoryTables().isEmpty()) return;
+            Map<String, Map<String, BigDecimal>> map = mySQLDatabase.getAllTerritoryData();
             sampleList.forEach(sample -> {
-                if(sample.getName().equals(sampleName)) {
-                    data.getConfigurationSection("territory." + sampleName).getValues(false).forEach((k, v) -> {
-                        sample.addBlackListPlayer(k, BigDecimal.valueOf(data.getDouble("territory." + sampleName + "." + k)));
-                    });
+                if(map.containsKey(sample.getName())) {
+                    Map<String, BigDecimal> sampleMap = map.get(sample.getName());
+                    sampleMap.forEach(sample::addBlackListPlayer);
                 }
             });
+        } else {
+            if(data.getConfigurationSection("territory") == null) return;
+            for(String sampleName : data.getConfigurationSection("territory").getValues(false).keySet()) {
+                sampleList.forEach(sample -> {
+                    if(sample.getName().equals(sampleName)) {
+                        data.getConfigurationSection("territory." + sampleName).getValues(false).forEach((k, v) -> {
+                            sample.addBlackListPlayer(k, BigDecimal.valueOf(data.getDouble("territory." + sampleName + "." + k)));
+                        });
+                    }
+                });
+            }
         }
     }
 
     @Override
     public void disable() {
+        boolean database = mySQLDatabase == null;
         for(TerritorySample sample : sampleList) {
             for(Map.Entry<String, BigDecimal> entry : sample.getBlackList().entrySet()) {
-                data.set("territory." + sample.getName() + "." + entry.getKey(),
-                        entry.getValue().doubleValue());
+                if(!database) {
+                    data.set("territory." + sample.getName() + "." + entry.getKey(),
+                            entry.getValue().doubleValue());
+                } else {
+                    if(!mySQLDatabase.getTerritoryTables().contains("servereconomy_territory_" + sample.getName())) {
+                        mySQLDatabase.createTerritoryTable(sample.getName());
+                    }
+                    mySQLDatabase.changeTerritoryData(sample.getName(), entry.getKey(), entry.getValue().doubleValue());
+                }
             }
         }
     }
