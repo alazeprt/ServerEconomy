@@ -54,3 +54,27 @@ store:
 territory:
   # Whether to enable the territory future
   enable: true
+
+# Database future
+database:
+  # Whether to enable the database future
+  enable: false
+
+  # Database Type
+  # Only have MySQL
+  type: "MySQL"
+
+  # MySQL database connection
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "servereconomy"
+    username: "root"
+    password: "123456"
+    driver: "com.mysql.cj.jdbc.Driver" # Use com.mysql.jdbc.Driver when MySQL version < 8.0
+
+  # HikariCP configuration
+  maxPoolSize: 20
+  minIdle: 20
+  idleTimeout: 60000
+  maxLifeTime: 18000
