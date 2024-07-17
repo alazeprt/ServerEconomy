@@ -62,11 +62,6 @@ public class ServerEconomyPlugin extends JavaPlugin {
         }
         config = YamlConfiguration.loadConfiguration(configFile);
         data = YamlConfiguration.loadConfiguration(dataFile);
-        if(config.getBoolean("store.enable")) {
-            getLogger().info("Setting up store system...");
-            store = new ServerStore(this);
-            store.enable();
-        }
         if(data.getString("money") == null) {
             data.set("money", new BigDecimal(config.getString("initial")).intValue());
             try {
@@ -77,6 +72,9 @@ public class ServerEconomyPlugin extends JavaPlugin {
         }
         money = new BigDecimal(data.getString("money"));
         if(config.getBoolean("store.enable")) {
+            getLogger().info("Setting up store system...");
+            store = new ServerStore(this);
+            store.enable();
             getLogger().info("Starting thread for data reset");
             store.enableReset();
         }
