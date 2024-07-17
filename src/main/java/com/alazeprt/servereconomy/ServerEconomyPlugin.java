@@ -50,6 +50,19 @@ public class ServerEconomyPlugin extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        if(config.getBoolean("database.enable")) {
+            getLogger().info("Setting up database...");
+            if(config.getString("database.type").equalsIgnoreCase("MySQL")) {
+                String host = config.getString("database.mysql.host");
+                int port = config.getInt("database.mysql.port");
+                String database = config.getString("database.mysql.database");
+                String username = config.getString("database.mysql.username");
+                String password = config.getString("database.mysql.password");
+                String driver = config.getString("database.mysql.driver");
+                mySQLDatabase = new MySQLDatabase(host, port, database, username, password);
+                mySQLDatabase.initial(driver);
+            }
+        }
         getLogger().info("Setting up data & configuration file");
         File configFile = new File(getDataFolder(), "config.yml");
         if(!configFile.exists()) {
@@ -84,19 +97,6 @@ public class ServerEconomyPlugin extends JavaPlugin {
             territory = new ServerTerritory(this);
             territory.enable();
         }
-        if(config.getBoolean("database.enable")) {
-            getLogger().info("Setting up database...");
-            if(config.getString("database.type").equalsIgnoreCase("MySQL")) {
-                String host = config.getString("database.mysql.host");
-                int port = config.getInt("database.mysql.port");
-                String database = config.getString("database.mysql.database");
-                String username = config.getString("database.mysql.username");
-                String password = config.getString("database.mysql.password");
-                String driver = config.getString("database.mysql.driver");
-                mySQLDatabase = new MySQLDatabase(host, port, database, username, password);
-                mySQLDatabase.initial(driver);
-            }
-        }
         getLogger().info("Setting up command");
         Objects.requireNonNull(getCommand("store")).setExecutor(new MainCommand());
         getLogger().info("Enabling events");
@@ -113,6 +113,7 @@ public class ServerEconomyPlugin extends JavaPlugin {
         if(territory != null) territory.disable();
         store.disable();
         try {
+            // TODO: money, time -> database
             data.set("money", money.doubleValue());
             data.save(new File(getDataFolder(), "data.yml"));
         } catch (IOException e) {
