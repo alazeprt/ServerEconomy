@@ -50,19 +50,6 @@ public class ServerEconomyPlugin extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if(config.getBoolean("database.enable")) {
-            getLogger().info("Setting up database...");
-            if(config.getString("database.type").equalsIgnoreCase("MySQL")) {
-                String host = config.getString("database.mysql.host");
-                int port = config.getInt("database.mysql.port");
-                String database = config.getString("database.mysql.database");
-                String username = config.getString("database.mysql.username");
-                String password = config.getString("database.mysql.password");
-                String driver = config.getString("database.mysql.driver");
-                mySQLDatabase = new MySQLDatabase(host, port, database, username, password);
-                mySQLDatabase.initial(driver);
-            }
-        }
         getLogger().info("Setting up data & configuration file");
         File configFile = new File(getDataFolder(), "config.yml");
         if(!configFile.exists()) {
@@ -78,6 +65,19 @@ public class ServerEconomyPlugin extends JavaPlugin {
         }
         config = YamlConfiguration.loadConfiguration(configFile);
         data = YamlConfiguration.loadConfiguration(dataFile);
+        if(config.getBoolean("database.enable")) {
+            getLogger().info("Setting up database...");
+            if(config.getString("database.type").equalsIgnoreCase("MySQL")) {
+                String host = config.getString("database.mysql.host");
+                int port = config.getInt("database.mysql.port");
+                String database = config.getString("database.mysql.database");
+                String username = config.getString("database.mysql.username");
+                String password = config.getString("database.mysql.password");
+                String driver = config.getString("database.mysql.driver");
+                mySQLDatabase = new MySQLDatabase(host, port, database, username, password);
+                mySQLDatabase.initial(driver);
+            }
+        }
         store = new ServerStore(this);
         store.enable();
         if(data.getString("money") == null) {
