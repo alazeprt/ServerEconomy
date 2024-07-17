@@ -2,6 +2,9 @@ package com.alazeprt.servereconomy.feature.store;
 
 import com.alazeprt.servereconomy.ServerEconomyPlugin;
 import com.alazeprt.servereconomy.feature.ServerFeature;
+import com.alazeprt.servereconomy.feature.store.commands.MainCommand;
+import com.alazeprt.servereconomy.feature.store.events.ServerStoreEvent;
+import com.alazeprt.servereconomy.feature.store.events.StoreEvent;
 import com.alazeprt.servereconomy.feature.store.utils.DataUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.Objects;
 
 import static com.alazeprt.servereconomy.ServerEconomyPlugin.config;
 import static com.alazeprt.servereconomy.ServerEconomyPlugin.data;
@@ -30,6 +34,11 @@ public class ServerStore implements ServerFeature {
     public void enable() {
         store_config = config.getConfigurationSection("store");
         store_data = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "store.yml"));
+        plugin.getLogger().info("Setting up command");
+        Objects.requireNonNull(plugin.getCommand("store")).setExecutor(new MainCommand());
+        plugin.getLogger().info("Enabling events");
+        ServerEconomyPlugin.addEvent(new ServerStoreEvent());
+        ServerEconomyPlugin.eventList.forEach(StoreEvent::onEnable);
     }
 
     @Override

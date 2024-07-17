@@ -3,6 +3,9 @@ initial: 10000
 
 # Store feature
 store:
+  # Whether to enable the store Shop feature
+  enabled: true
+
   stop:
     # Whether to enable the stop Shop feature
     enable: true

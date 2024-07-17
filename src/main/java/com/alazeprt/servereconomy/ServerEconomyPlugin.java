@@ -62,8 +62,11 @@ public class ServerEconomyPlugin extends JavaPlugin {
         }
         config = YamlConfiguration.loadConfiguration(configFile);
         data = YamlConfiguration.loadConfiguration(dataFile);
-        store = new ServerStore(this);
-        store.enable();
+        if(config.getBoolean("store.enable")) {
+            getLogger().info("Setting up store system...");
+            store = new ServerStore(this);
+            store.enable();
+        }
         if(data.getString("money") == null) {
             data.set("money", new BigDecimal(config.getString("initial")).intValue());
             try {
@@ -73,19 +76,16 @@ public class ServerEconomyPlugin extends JavaPlugin {
             }
         }
         money = new BigDecimal(data.getString("money"));
-        getLogger().info("Starting thread for data reset");
-        store.enableReset();
+        if(config.getBoolean("store.enable")) {
+            getLogger().info("Starting thread for data reset");
+            store.enableReset();
+        }
         if(config.getBoolean("territory.enable")) {
             getLogger().info("Setting up territory system...");
             griefPrevention = GriefPrevention.instance;
             territory = new ServerTerritory(this);
             territory.enable();
         }
-        getLogger().info("Setting up command");
-        Objects.requireNonNull(getCommand("store")).setExecutor(new MainCommand());
-        getLogger().info("Enabling events");
-        addEvent(new ServerStoreEvent());
-        eventList.forEach(StoreEvent::onEnable);
         getLogger().info("ServerStore is ready! (" + (System.currentTimeMillis() - start) + " ms)");
     }
 
