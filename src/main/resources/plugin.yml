@@ -1,6 +1,6 @@
 name: ServerEconomy
 main: com.alazeprt.servereconomy.ServerEconomyPlugin
-version: ${version}
+version: 1.0
 author: alazeprt
 api-version: 1.13
 description: A better system store by command
