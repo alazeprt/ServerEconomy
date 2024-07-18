@@ -93,7 +93,7 @@ public class ServerEconomyPlugin extends JavaPlugin {
         getLogger().info("Disabling ServerEconomy");
         getLogger().info("Disabling features");
         if(territory != null) territory.disable();
-        store.disable();
+        if(store != null) store.disable();
         try {
             data.set("money", money.doubleValue());
             data.save(new File(getDataFolder(), "data.yml"));
