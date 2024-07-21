@@ -57,3 +57,27 @@ store:
 territory:
   # Whether to enable the territory future
   enable: true
+
+# Database future
+database:
+  # Whether to enable the database future
+  enable: true
+
+  # The database to use
+  # Currently only supports MySQL
+  type: "mysql"
+
+  # The database host
+  host: "localhost"
+
+  # The database port
+  port: 3306
+
+  # The database username
+  username: "root"
+
+  # The database password
+  password: "123456"
+
+  # The database name
+  database: "serverstore"

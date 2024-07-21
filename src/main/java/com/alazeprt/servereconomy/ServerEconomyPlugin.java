@@ -1,5 +1,8 @@
 package com.alazeprt.servereconomy;
 
+import com.alazeprt.servereconomy.database.mysql.DatabasePool;
+import com.alazeprt.servereconomy.database.mysql.StoreDatabase;
+import com.alazeprt.servereconomy.database.mysql.TerritoryDatabase;
 import com.alazeprt.servereconomy.feature.store.ServerStore;
 import com.alazeprt.servereconomy.feature.store.commands.MainCommand;
 import com.alazeprt.servereconomy.feature.store.events.ServerStoreEvent;
@@ -31,6 +34,10 @@ public class ServerEconomyPlugin extends JavaPlugin {
 
     public static Economy economy;
 
+    public static StoreDatabase storeDatabase;
+
+    public static TerritoryDatabase territoryDatabase;
+
     private ServerStore store;
 
     private ServerTerritory territory;
@@ -61,16 +68,29 @@ public class ServerEconomyPlugin extends JavaPlugin {
             saveResource("store.yml", false);
         }
         config = YamlConfiguration.loadConfiguration(configFile);
-        data = YamlConfiguration.loadConfiguration(dataFile);
-        if(data.getString("money") == null) {
-            data.set("money", new BigDecimal(config.getString("initial")).intValue());
-            try {
-                data.save(dataFile);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        if(config.getBoolean("database.enable") && config.getString("database.type").equalsIgnoreCase("mysql")) {
+            getLogger().info("Setting up database... (MySQL)");
+            String host = config.getString("database.host");
+            String username = config.getString("database.username");
+            String password = config.getString("database.password");
+            String database = config.getString("database.database");
+            int port = config.getInt("database.port");
+            DatabasePool databasePool = new DatabasePool(host, port, username, password, database);
+            databasePool.init();
+            storeDatabase = new StoreDatabase(databasePool);
+            territoryDatabase = new TerritoryDatabase(databasePool);
+        } else {
+            data = YamlConfiguration.loadConfiguration(dataFile);
+            if(data.getString("money") == null) {
+                data.set("money", new BigDecimal(config.getString("initial")).intValue());
+                try {
+                    data.save(dataFile);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
+            money = new BigDecimal(data.getString("money"));
         }
-        money = new BigDecimal(data.getString("money"));
         if(config.getBoolean("store.enable")) {
             getLogger().info("Setting up store system...");
             store = new ServerStore(this);

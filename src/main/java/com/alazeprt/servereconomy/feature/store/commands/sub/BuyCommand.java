@@ -3,7 +3,6 @@ package com.alazeprt.servereconomy.feature.store.commands.sub;
 import com.alazeprt.servereconomy.ServerEconomyPlugin;
 import com.alazeprt.servereconomy.feature.store.commands.SubCommand;
 import com.alazeprt.servereconomy.feature.store.events.StoreEvent;
-import com.alazeprt.servereconomy.feature.store.utils.DataUtils;
 import com.alazeprt.servereconomy.utils.InventoryUtils;
 import com.alazeprt.servereconomy.feature.store.utils.StatusUtils;
 import org.bukkit.Material;
@@ -13,6 +12,7 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 
 import static com.alazeprt.servereconomy.ServerEconomyPlugin.*;
+import static com.alazeprt.servereconomy.feature.store.ServerStore.dataUtils;
 import static com.alazeprt.servereconomy.feature.store.ServerStore.store_data;
 
 public class BuyCommand implements SubCommand {
@@ -41,11 +41,11 @@ public class BuyCommand implements SubCommand {
             sender.sendMessage("§c数量必须为正整数!");
             return;
         }
-        if(!DataUtils.buyPerPlayerLimit(project, player.getName(), amount)) {
+        if(!dataUtils.buyPerPlayerLimit(project, player.getName(), amount)) {
             sender.sendMessage("§c你购买此物品的数量已达上限!");
             return;
         }
-        if(!DataUtils.buyTotalLimit(project, amount)) {
+        if(!dataUtils.buyTotalLimit(project, amount)) {
             sender.sendMessage("§c此物品的购买数量已达上限!");
             return;
         }
@@ -60,7 +60,7 @@ public class BuyCommand implements SubCommand {
         InventoryUtils.giveItemToPlayer(player, Material.valueOf(store_data.getString("buy." + project + ".item").toUpperCase()), buy_amount);
         ServerEconomyPlugin.money = ServerEconomyPlugin.money.add(money);
         player.sendMessage("§a购买成功!");
-        DataUtils.addBuyAmount(project, player.getName(), amount);
+        dataUtils.addBuyAmount(project, player.getName(), amount);
         eventList.forEach(StoreEvent::onBuy);
     }
 }

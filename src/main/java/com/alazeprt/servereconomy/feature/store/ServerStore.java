@@ -6,6 +6,8 @@ import com.alazeprt.servereconomy.feature.store.commands.MainCommand;
 import com.alazeprt.servereconomy.feature.store.events.ServerStoreEvent;
 import com.alazeprt.servereconomy.feature.store.events.StoreEvent;
 import com.alazeprt.servereconomy.feature.store.utils.DataUtils;
+import com.alazeprt.servereconomy.feature.store.utils.FileUtils;
+import com.alazeprt.servereconomy.feature.store.utils.MySQLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,6 +28,8 @@ public class ServerStore implements ServerFeature {
 
     private final ServerEconomyPlugin plugin;
 
+    public static DataUtils dataUtils;
+
     public ServerStore(ServerEconomyPlugin plugin) {
         this.plugin = plugin;
     }
@@ -36,6 +40,11 @@ public class ServerStore implements ServerFeature {
         store_data = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "store.yml"));
         plugin.getLogger().info("Setting up command");
         Objects.requireNonNull(plugin.getCommand("store")).setExecutor(new MainCommand());
+        if(config.getBoolean("database.enable")) {
+            dataUtils = new MySQLUtils();
+        } else {
+            dataUtils = new FileUtils();
+        }
         plugin.getLogger().info("Enabling events");
         ServerEconomyPlugin.addEvent(new ServerStoreEvent());
         ServerEconomyPlugin.eventList.forEach(StoreEvent::onEnable);
@@ -49,11 +58,11 @@ public class ServerStore implements ServerFeature {
             Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 data.set("time", data.getInt("time") + 1);
                 if(store_data.getBoolean("sell.reset_limit") && (data.getInt("time") / 60.0) % store_data.getInt("sell.reset_time") == 0) {
-                    DataUtils.resetSellData();
+                    dataUtils.resetSellData();
                     Bukkit.getScheduler().runTask(plugin, () -> getServer().broadcastMessage("§a[ServerStore] 重置物品收购数量!"));
                 }
                 if(store_data.getBoolean("buy.reset_limit") && (data.getInt("time") / 60.0) % store_data.getInt("buy.reset_time") == 0) {
-                    DataUtils.resetBuyData();
+                    dataUtils.resetBuyData();
                     Bukkit.getScheduler().runTask(plugin, () -> getServer().broadcastMessage("§a[ServerStore] 重置物品购买数量!"));
                 }
             }, 0, 1200);
