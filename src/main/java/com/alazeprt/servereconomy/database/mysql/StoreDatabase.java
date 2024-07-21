@@ -9,15 +9,15 @@ public class StoreDatabase {
 
     private final DatabasePool databasePool;
 
-    private final String create = "create table if not exists ?(`name` varchar(512) not null, `money` decimal(16,4) not null);";
+    private final String create = "create table if not exists se_store_?(`name` varchar(512) not null, `money` decimal(16,4) not null);";
 
-    private final String insert = "insert into ? values(?, ?);";
+    private final String insert = "insert into se_store_? values(?, ?);";
 
-    private final String search = "select * from ? where `name` = ?;";
+    private final String search = "select * from se_store_? where `name` = ?;";
 
-    private final String searchAll = "select * from ?;";
+    private final String searchAll = "select * from se_store_?;";
 
-    private final String drop = "drop table ?;";
+    private final String drop = "drop table se_store_?;";
 
     public StoreDatabase(DatabasePool databasePool) {
         this.databasePool = databasePool;
