@@ -22,6 +22,7 @@ public class MySQLUtils implements DataUtils {
 
     @Override
     public boolean sellPerPlayerLimit(String project, String player, BigDecimal addAmount) {
+        ServerEconomyPlugin.storeDatabase.createTable(StoreType.SELL, project);
         if(!store_data.getBoolean("sell.player_limit")) {
             return true;
         }
@@ -32,6 +33,7 @@ public class MySQLUtils implements DataUtils {
 
     @Override
     public boolean buyPerPlayerLimit(String project, String player, BigDecimal addAmount) {
+        ServerEconomyPlugin.storeDatabase.createTable(StoreType.SELL, project);
         if(!store_data.getBoolean("buy.player_limit")) {
             return true;
         }
@@ -42,10 +44,8 @@ public class MySQLUtils implements DataUtils {
 
     @Override
     public boolean sellTotalLimit(String project, BigDecimal addAmount) {
+        ServerEconomyPlugin.storeDatabase.createTable(StoreType.SELL, project);
         if(!store_data.getBoolean("sell.total_limit")) {
-            return true;
-        }
-        if(data.getConfigurationSection("sell." + project + ".players") == null) {
             return true;
         }
         BigDecimal bigDecimal = ServerEconomyPlugin.storeDatabase.searchTotal(StoreType.SELL, project);
@@ -55,10 +55,8 @@ public class MySQLUtils implements DataUtils {
 
     @Override
     public boolean buyTotalLimit(String project, BigDecimal addAmount) {
+        ServerEconomyPlugin.storeDatabase.createTable(StoreType.SELL, project);
         if(!store_data.getBoolean("buy.total_limit")) {
-            return true;
-        }
-        if(data.getConfigurationSection("buy." + project + ".players") == null) {
             return true;
         }
         BigDecimal bigDecimal = ServerEconomyPlugin.storeDatabase.searchTotal(StoreType.BUY, project);
