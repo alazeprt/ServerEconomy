@@ -1,6 +1,7 @@
 package com.alazeprt.servereconomy;
 
 import com.alazeprt.servereconomy.database.mysql.DatabasePool;
+import com.alazeprt.servereconomy.database.mysql.GeneralDatabase;
 import com.alazeprt.servereconomy.database.mysql.StoreDatabase;
 import com.alazeprt.servereconomy.database.mysql.TerritoryDatabase;
 import com.alazeprt.servereconomy.feature.store.ServerStore;
@@ -42,6 +43,8 @@ public class ServerEconomyPlugin extends JavaPlugin {
 
     private ServerTerritory territory;
 
+    private GeneralDatabase generalDatabase;
+
     public static final List<StoreEvent> eventList = new ArrayList<>();
 
     @Override
@@ -79,6 +82,8 @@ public class ServerEconomyPlugin extends JavaPlugin {
             databasePool.init();
             storeDatabase = new StoreDatabase(databasePool);
             territoryDatabase = new TerritoryDatabase(databasePool);
+            generalDatabase = new GeneralDatabase(databasePool);
+            money = generalDatabase.init();
         } else {
             data = YamlConfiguration.loadConfiguration(dataFile);
             if(data.getString("money") == null) {
@@ -114,11 +119,15 @@ public class ServerEconomyPlugin extends JavaPlugin {
         getLogger().info("Disabling features");
         if(territory != null) territory.disable();
         if(store != null) store.disable();
-        try {
-            data.set("money", money.doubleValue());
-            data.save(new File(getDataFolder(), "data.yml"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if(storeDatabase == null) {
+            try {
+                data.set("money", money.doubleValue());
+                data.save(new File(getDataFolder(), "data.yml"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            generalDatabase.shutdown(money);
         }
         getLogger().info("Disabling events");
         eventList.forEach(StoreEvent::onDisable);

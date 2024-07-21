@@ -4,7 +4,6 @@ import com.alazeprt.servereconomy.ServerEconomyPlugin;
 
 import java.math.BigDecimal;
 
-import static com.alazeprt.servereconomy.ServerEconomyPlugin.data;
 import static com.alazeprt.servereconomy.feature.store.ServerStore.store_data;
 
 public class MySQLUtils implements DataUtils {

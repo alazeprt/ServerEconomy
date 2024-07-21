@@ -29,6 +29,8 @@ public class StoreDatabase {
             PreparedStatement preparedStatement = connection.prepareStatement(create);
             preparedStatement.setString(1, type.name().toLowerCase() + "_" + name);
             preparedStatement.execute();
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -41,6 +43,8 @@ public class StoreDatabase {
             preparedStatement.setString(2, playerName);
             preparedStatement.setBigDecimal(3, money);
             preparedStatement.execute();
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -57,6 +61,9 @@ public class StoreDatabase {
             while(resultSet.next()) {
                 bigDecimal = bigDecimal.add(resultSet.getBigDecimal("money"));
             }
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
             return bigDecimal;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -73,6 +80,9 @@ public class StoreDatabase {
             while(resultSet.next()) {
                 bigDecimal = bigDecimal.add(resultSet.getBigDecimal("money"));
             }
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
             return bigDecimal;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -89,8 +99,12 @@ public class StoreDatabase {
                     PreparedStatement preparedStatement = connection.prepareStatement(drop);
                     preparedStatement.setString(1, resultSet.getString("name"));
                     preparedStatement.execute();
+                    preparedStatement.close();
                 }
             }
+            resultSet.close();
+            statement.close();
+            connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
